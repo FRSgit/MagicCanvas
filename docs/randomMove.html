@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Magic Canvas</title>
+  <style>
+    body {
+      background: url("./bg.jpg") no-repeat;
+      background-size: cover;
+      min-height: 960px;
+      font-family: Tahoma, Arial, sans-serif;
+    }
+
+    .info-box {
+      position: fixed;
+      right: 5%;
+    }
+
+    h1, h2 {
+      font-weight: normal;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+<div class="info-box">
+  <h1>Magic Canvas</h1>
+  <h2>by decaywood & FRS</h2>
+</div>
+<canvas id="reactive-bg-canvas"></canvas>
+
+<script src="./magic-canvas.min.js"></script>
+<script>
+  function randomMove () {
+    MagicCanvas.draw({
+      type: 'random-move',
+      rgb : function (circlePos) {
+        var px = circlePos.x
+        var py = circlePos.y
+        // do some computation....
+        return {r: parseInt(px % 255), g: parseInt(py % 255), b: 203}
+      }
+    })
+  }
+
+  randomMove()
+</script>
+</body>
+</html>

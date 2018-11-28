@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Magic Canvas</title>
+  <style>
+    body {
+      background: url("./bg.jpg") no-repeat;
+      background-size: cover;
+      min-height: 960px;
+      font-family: Tahoma, Arial, sans-serif;
+    }
+
+    .info-box {
+      position: fixed;
+      right: 5%;
+    }
+
+    h1, h2 {
+      font-weight: normal;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+<div class="info-box">
+  <h1>Magic Canvas</h1>
+  <h2>by decaywood & FRS</h2>
+</div>
+<canvas id="reactive-bg-canvas"></canvas>
+
+<script src="./magic-canvas.min.js"></script>
+<script>
+  function heartBeat () {
+    MagicCanvas.draw({
+      lineLen       : 18,
+      heartBeatCD   : 3000,
+      heartBeatRange: 300,
+      type          : 'heart-beat',
+      rgb           : function (circlePos, heartBeatCenter) {
+        var px   = circlePos.x // a point on boom circle
+        var py   = circlePos.y
+        var hbcx = heartBeatCenter.x
+        var hbcy = heartBeatCenter.y
+
+        var dis    = Math.pow((px - hbcx), 2) + Math.pow((py - hbcy), 2)
+        var maxDis = 300 * 300
+
+        var r = 255 * dis / maxDis
+        // do some computation....
+        return {r: r, g: 217, b: 203}
+      }
+    })
+  }
+
+  heartBeat()
+</script>
+</body>
+</html>
