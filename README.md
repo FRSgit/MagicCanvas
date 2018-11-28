@@ -18,7 +18,7 @@ This effect needs considerable performance to work smoothly and shows best resul
 
 ## Examples
 
-##### Demo1: heart-beat effect ([see live](https://FRSgit.github.io/MagicCanvas/hearbeat))
+##### Demo1: heart-beat effect ([see live](https://FRSgit.github.io/MagicCanvas/heartbeat))
 
 ```javascript
 MagicCanvas.draw({
