@@ -139,11 +139,13 @@ window.MagicCanvas = {
     }
 
     function animateRandomMove () {
-      var rp = getRelativeP()
+      var rp           = getRelativeP()
+      var pointsToDraw = {}
 
-      for (var i = 0; i < points.length; ++i) {
+      for (var i = 0, len = points.length; i < len; ++i) {
         var point    = points[i]
         var distance = Math.abs(getDistance(rp, point))
+
         // detect points in range
         if (distance < 4000) {
           point.active        = 0.3
@@ -155,13 +157,27 @@ window.MagicCanvas = {
           point.active        = 0.02
           point.circle.active = 0.1
         } else {
-          point.active        = 0
-          point.circle.active = 0
+          continue
         }
 
-        drawLines(point)
+        var closest = point.closest
+        var pointId = point.id.toString()
+
+        for (var j = 0; j < closest.length; ++j) {
+          var closePoint = closest[j]
+          var hash       = point.id < closePoint.id ? pointId + ' ' + closePoint.id : closePoint.id + ' ' + pointId
+
+          if (pointsToDraw[hash] === void 0) {
+            pointsToDraw[hash] = 0
+          }
+
+          pointsToDraw[hash] += point.active
+        }
+
         point.circle.draw()
       }
+
+      drawPoints(pointsToDraw)
     }
 
     function heartBeat () {
@@ -352,7 +368,7 @@ window.MagicCanvas = {
       this.centerP = centerP
 
       this.draw = function () {
-        if (!this.active) {
+        if (this.active === 0) {
           return
         }
         ctx.beginPath()
@@ -365,17 +381,21 @@ window.MagicCanvas = {
     }
 
     // Canvas manipulation
-    function drawLines (p) {
-      if (!p.active) {
-        return
-      }
-      for (var i = 0; i < p.closest.length; ++i) {
+    function drawPoints (ps) {
+      var rgbRes            = options.rgb(target)
+      var strokeStylePrefix = 'rgba(' + rgbRes.r + ',' + rgbRes.g + ',' + rgbRes.b + ','
+      var hash
+
+      for (hash in ps) {
+        var active = ps[hash]
+        var p      = hash.split(' ')
+        var p1     = points[parseInt(p[0])]
+        var p2     = points[parseInt(p[1])]
+
         ctx.beginPath()
-        ctx.moveTo(p.x, p.y)
-        ctx.lineTo(p.closest[i].x, p.closest[i].y)
-        var rgbRes      = options.rgb(target)
-        rgbRes          = rgbRes.r + ',' + rgbRes.g + ',' + rgbRes.b
-        ctx.strokeStyle = 'rgba(' + rgbRes + ',' + p.active + ')'
+        ctx.moveTo(p1.x, p1.y)
+        ctx.lineTo(p2.x, p2.y)
+        ctx.strokeStyle = strokeStylePrefix + active + ')'
         ctx.stroke()
       }
     }
@@ -412,6 +432,8 @@ window.MagicCanvas = {
         for (var i = 0; i < points.length; ++i) {
           var closest = []
           var p1      = points[i]
+
+          p1.id = i
 
           for (var j = 0; j < points.length; ++j) {
             var p2 = points[j]
